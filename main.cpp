@@ -110,13 +110,18 @@ int main(){
         
         x_ark4 = x_ark4 + h_ark4;
         y_ark4 = y_next_ark4;
-    
+
+        // if (y_rk4 > 2.71){
+        //     y_rk4 = 2.7181;
+        // }
         // Check and break when x = 1 for y = e = 2.7181..
-        if (x_rk4 > eval_for_x || x_ark4 > eval_for_x){
+        // if (x_rk4 > eval_for_x || x_ark4 > eval_for_x){
+        if ( x_ark4 > eval_for_x){
             break;
         }
     }
 
+    gp << "set term x11 title 'Runge-Kutta Differential Equation Solver'\n";
     // gp << "set xrange [1:2]\nset yrange [0:3]\n";
     gp << "plot '-' with points title 'RK4','-' with points title 'Adaptive RK4'\n";
     gp.send1d(rk4_yvector);
