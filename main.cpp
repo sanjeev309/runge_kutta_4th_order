@@ -3,16 +3,16 @@
 
 #include <math.h>
 
-
 #include "headers/gnuplot-iostream.h"
 
-
 using namespace std;
+
 
 //Function to approximate y' = y
 double dydx(double x, double y){
     return y;
 }
+
 
 // Compute yn+1 given xn, yn and step size h
 double runge_kutta_4th_order(double x, double y, double h){
@@ -26,6 +26,7 @@ double runge_kutta_4th_order(double x, double y, double h){
 
     return y_next;
 }
+
 
 //Compute yn+1 given xn, yn, h using adaptive RK 4th order method
 double adaptive_runge_kutta_4th_order(double x, double y, double& h,double h_min, double h_max, double target_err, double s_factor)
@@ -72,8 +73,8 @@ double adaptive_runge_kutta_4th_order(double x, double y, double& h,double h_min
     double y_next = runge_kutta_4th_order(x, y, h);
 
     return y_next;
-
 }
+
 
 int main(){
 
@@ -121,7 +122,6 @@ int main(){
     gp.send1d(rk4_yvector);
     gp.send1d(adaptive_rk4_yvector);
     // gp.send1d(boost::make_tuple( rk4_yvector, adaptive_rk4_yvector));
-
 
 return 0;
 }
