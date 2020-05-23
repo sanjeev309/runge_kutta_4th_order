@@ -3,6 +3,10 @@
 
 #include <math.h>
 
+
+#include "headers/gnuplot-iostream.h"
+
+
 using namespace std;
 
 //Function to approximate y' = y
@@ -73,6 +77,10 @@ double adaptive_runge_kutta_4th_order(double x, double y, double& h,double h_min
 
 int main(){
 
+    Gnuplot gp;
+
+    vector<double> rk4_yvector, adaptive_rk4_yvector;
+
     double x, y, h;
     double x_rk4, x_ark4, y_rk4, y_ark4, y_next_rk4, y_next_ark4, h_rk4, h_ark4;
 
@@ -86,6 +94,12 @@ int main(){
         
         y_next_rk4 = runge_kutta_4th_order(x_rk4, y_rk4, h_rk4);
         y_next_ark4 = adaptive_runge_kutta_4th_order(x_ark4, y_ark4, h_ark4, 0.0001, 0.01, 10e-3, 1.5);
+
+        // rk4_xvector.push_back(x_rk4);
+        // adaptive_rk4_xvector.push_back(x_ark4);
+
+        rk4_yvector.push_back(y_next_rk4);
+        adaptive_rk4_yvector.push_back(y_next_ark4);
 
         cout<< "Iteration: "<< iter << " | RK4 yn+1 = " << y_next_rk4 << " | Adaptive RK4 yn+1 = "<< y_next_ark4 <<"  || Adaptive h: "<< h_ark4<< endl;
         
@@ -101,6 +115,13 @@ int main(){
             break;
         }
     }
+
+    // gp << "set xrange [1:2]\nset yrange [0:3]\n";
+    gp << "plot '-' with points title 'RK4','-' with points title 'Adaptive RK4'\n";
+    gp.send1d(rk4_yvector);
+    gp.send1d(adaptive_rk4_yvector);
+    // gp.send1d(boost::make_tuple( rk4_yvector, adaptive_rk4_yvector));
+
 
 return 0;
 }
