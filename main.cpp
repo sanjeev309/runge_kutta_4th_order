@@ -15,12 +15,12 @@ double dydx(double x, double y){
 
 
 // Compute yn+1 given xn, yn and step size h
-double runge_kutta_4th_order(double x, double y, double h){
+double runge_kutta_4th_order(double x, double y, double h, double (*f)(double, double)){
 
-    double k1 = h * dydx(x,y);
-    double k2 = h* dydx(x + (h/2), y + (k1/2));
-    double k3 = h* dydx(x + (h/2), y + (k2/2));
-    double k4 = h* dydx(x + h, y + k3);
+    double k1 = h * (*f)(x,y);
+    double k2 = h* (*f)(x + (h/2), y + (k1/2));
+    double k3 = h* (*f)(x + (h/2), y + (k2/2));
+    double k4 = h* (*f)(x + h, y + k3);
 
     double y_next = y + (k1 + (2*k2) + (2*k3) + k4)/6.;
 
@@ -29,15 +29,15 @@ double runge_kutta_4th_order(double x, double y, double h){
 
 
 //Compute yn+1 given xn, yn, h using adaptive RK 4th order method
-double adaptive_runge_kutta_4th_order(double x, double y, double& h,double h_min, double h_max, double target_err, double s_factor)
+double adaptive_runge_kutta_4th_order(double x, double y, double& h,double h_min, double h_max, double target_err, double s_factor, double (*f)(double, double))
 {
     // Take one full step with rk4
-    double y_full = runge_kutta_4th_order(x, y, h);
+    double y_full = runge_kutta_4th_order(x, y, h, f);
 
     // Take two half steps with rk4
     double h_half = h/2.;
-    double y_half = runge_kutta_4th_order(x, y, h_half);
-    y_half = runge_kutta_4th_order(x, y, h_half);
+    double y_half = runge_kutta_4th_order(x, y, h_half, f);
+    y_half = runge_kutta_4th_order(x, y, h_half, f);
 
     //Calculate absolute and relative truncation error: take the min of two
     // Relative error
@@ -70,7 +70,7 @@ double adaptive_runge_kutta_4th_order(double x, double y, double& h,double h_min
         }
 
     // Calculate the next step with new parameter h
-    double y_next = runge_kutta_4th_order(x, y, h);
+    double y_next = runge_kutta_4th_order(x, y, h, f);
 
     return y_next;
 }
@@ -93,8 +93,8 @@ int main(){
 
     for (int iter = 0; iter < 2000; iter++){
         
-        y_next_rk4 = runge_kutta_4th_order(x_rk4, y_rk4, h_rk4);
-        y_next_ark4 = adaptive_runge_kutta_4th_order(x_ark4, y_ark4, h_ark4, 0.0001, 0.01, 10e-3, 1.5);
+        y_next_rk4 = runge_kutta_4th_order(x_rk4, y_rk4, h_rk4, dydx);
+        y_next_ark4 = adaptive_runge_kutta_4th_order(x_ark4, y_ark4, h_ark4, 0.0001, 0.01, 10e-3, 1.5, dydx);
 
         // rk4_xvector.push_back(x_rk4);
         // adaptive_rk4_xvector.push_back(x_ark4);
